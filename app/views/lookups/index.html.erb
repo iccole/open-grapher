@@ -8,7 +8,7 @@
 <%= turbo_stream_from "lookups_#{session[:lookup_session_id]}" %>
 
 <div id="lookups">
-  <% @lookups.reverse_each do |lookup_id, lookup| %>
+  <% @lookups.reverse.each do |lookup_id, lookup| %>
     <%= render partial: "lookups/lookup", locals: { lookup_id: lookup_id, lookup: lookup } %>
   <% end %>
 </div>

@@ -33,8 +33,8 @@ Rails.application.configure do
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
 
-  # Raise an error on page load if there are pending migrations.
-  config.active_record.migration_error = :page_load
+  # Only check for pending migrations when using Postgres storage.
+  config.active_record.migration_error = ENV["LOOKUP_STORE"] == "postgres" ? :page_load : false
 
 
   # Highlight code that enqueued background job in logs.

@@ -4,7 +4,7 @@ FROM docker.io/library/ruby:$RUBY_VERSION-slim
 WORKDIR /rails
 
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y curl build-essential git libyaml-dev pkg-config libvips sqlite3 && \
+    apt-get install --no-install-recommends -y curl build-essential git libyaml-dev pkg-config libvips sqlite3 libpq-dev && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 ENV BUNDLE_PATH="/usr/local/bundle"

@@ -10,9 +10,13 @@ A small utility that fetches [Open Graph](https://ogp.me/) metadata for any URL.
 
 Each browser session maintains its own lookup history. Open an incognito window and you get a clean slate.
 
-## Why Redis
+## Storage backends
 
-Redis is the single backing store for the entire app. There is no traditional database.
+The lookup store is configurable via the `LOOKUP_STORE` environment variable.
+
+### Redis (default)
+
+Redis is the single backing store. There is no traditional database.
 
 - **Ephemeral storage** — Lookup results are stored in Redis hashes with a 24-hour TTL. There's nothing worth persisting long-term, so a relational database would be unnecessary overhead. Data expires automatically and Redis reclaims the memory.
 - **Sidekiq** — Sidekiq requires Redis for its job queue. Since Redis is already a dependency, it made sense to use it as the data store too rather than introducing a second stateful service.
@@ -20,19 +24,24 @@ Redis is the single backing store for the entire app. There is no traditional da
 
 One service handles job queuing, real-time broadcast, and data storage. The architecture stays simple.
 
-## Running locally
-
 ```
 docker compose up --build
 ```
 
-This starts three services:
+### Postgres
 
-| Service  | Description              |
-|----------|--------------------------|
-| **web**  | Rails on port 3001       |
-| **sidekiq** | Background job worker |
-| **redis**   | Redis 7 (Alpine)      |
+If you need persistent, queryable storage, set `LOOKUP_STORE=postgres` and use the Postgres compose file. Lookups are stored in a `lookups` table. Redis is still required for Sidekiq and ActionCable.
+
+```
+docker compose -f docker-compose.postgres.yml up --build
+```
+
+## Running locally
+
+| Compose file | Services | Storage |
+|---|---|---|
+| `docker-compose.yml` | web, sidekiq, redis | Redis only |
+| `docker-compose.postgres.yml` | web, sidekiq, redis, postgres | Postgres + Redis |
 
 Visit [localhost:3001](http://localhost:3001) to use the app, and [localhost:3001/sidekiq](http://localhost:3001/sidekiq) for the Sidekiq dashboard.
 

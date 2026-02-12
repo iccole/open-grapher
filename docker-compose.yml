@@ -10,6 +10,7 @@ services:
     environment:
       REDIS_URL: redis://redis:6379/0
       RAILS_ENV: development
+      BUNDLE_WITHOUT: postgres
     depends_on:
       - redis
 
@@ -22,6 +23,7 @@ services:
     environment:
       REDIS_URL: redis://redis:6379/0
       RAILS_ENV: development
+      BUNDLE_WITHOUT: postgres
     depends_on:
       - redis
 

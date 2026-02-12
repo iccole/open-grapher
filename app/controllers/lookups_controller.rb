@@ -1,6 +1,6 @@
 class LookupsController < ApplicationController
   def index
-    @lookups = load_lookups
+    @lookups = store.all_for_session(session_id)
   end
 
   def create
@@ -12,20 +12,9 @@ class LookupsController < ApplicationController
 
     url = "https://#{url}" unless url.match?(%r{\Ahttps?://})
 
-    lookup_id = SecureRandom.hex(8)
+    @lookup_id, @lookup = store.create_pending(session_id, url)
 
-    redis.hset("session:#{session_id}:lookup:#{lookup_id}",
-      "url", url,
-      "status", "pending"
-    )
-    redis.expire("session:#{session_id}:lookup:#{lookup_id}", 86400)
-    redis.rpush("session:#{session_id}:lookups", lookup_id)
-    redis.expire("session:#{session_id}:lookups", 86400)
-
-    FetchOpenGraphJob.perform_later(session_id, lookup_id, url)
-
-    @lookup_id = lookup_id
-    @lookup = redis.hgetall("session:#{session_id}:lookup:#{lookup_id}")
+    FetchOpenGraphJob.perform_later(session_id, @lookup_id, url)
 
     respond_to do |format|
       format.turbo_stream
@@ -39,14 +28,7 @@ class LookupsController < ApplicationController
     session[:lookup_session_id] ||= SecureRandom.hex(16)
   end
 
-  def redis
-    @redis ||= Redis.new(url: ENV.fetch("REDIS_URL", "redis://localhost:6379/0"))
-  end
-
-  def load_lookups
-    lookup_ids = redis.lrange("session:#{session_id}:lookups", 0, -1)
-    lookup_ids.map do |id|
-      [id, redis.hgetall("session:#{session_id}:lookup:#{id}")]
-    end.reject { |_, data| data.empty? }
+  def store
+    LookupStore.backend
   end
 end
