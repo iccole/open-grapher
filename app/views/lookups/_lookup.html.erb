@@ -1,0 +1,34 @@
+<div id="lookup_<%= lookup_id %>" class="lookup-card">
+  <% if lookup["status"] == "pending" %>
+    <div class="lookup-pending">
+      <span class="spinner"></span>
+      <span class="lookup-url"><%= lookup["url"] %></span>
+    </div>
+  <% elsif lookup["status"] == "error" %>
+    <div class="lookup-error">
+      <strong><%= lookup["url"] %></strong>
+      <p class="error-message"><%= lookup["error"] %></p>
+    </div>
+  <% else %>
+    <div class="lookup-result">
+      <% if lookup["image"].present? %>
+        <img src="<%= lookup["image"] %>" alt="" class="og-image" loading="lazy">
+      <% end %>
+      <div class="og-details">
+        <h3><%= lookup["title"].presence || lookup["url"] %></h3>
+        <% if lookup["description"].present? %>
+          <p class="og-description"><%= lookup["description"] %></p>
+        <% end %>
+        <div class="og-meta">
+          <span class="og-url"><%= lookup["og_url"].presence || lookup["url"] %></span>
+          <% if lookup["site_name"].present? %>
+            <span class="og-site"><%= lookup["site_name"] %></span>
+          <% end %>
+          <% if lookup["type"].present? %>
+            <span class="og-type"><%= lookup["type"] %></span>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>

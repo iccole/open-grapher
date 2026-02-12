@@ -1,0 +1,14 @@
+<h1>Open Grapher</h1>
+
+<%= form_with url: lookups_path, method: :post, class: "lookup-form" do |f| %>
+  <%= f.text_field :url, placeholder: "Enter a URL...", autofocus: true, class: "url-input" %>
+  <%= f.submit "Fetch", class: "btn" %>
+<% end %>
+
+<%= turbo_stream_from "lookups_#{session[:lookup_session_id]}" %>
+
+<div id="lookups">
+  <% @lookups.reverse_each do |lookup_id, lookup| %>
+    <%= render partial: "lookups/lookup", locals: { lookup_id: lookup_id, lookup: lookup } %>
+  <% end %>
+</div>

@@ -1,0 +1,3 @@
+<%= turbo_stream.prepend "lookups" do %>
+  <%= render partial: "lookups/lookup", locals: { lookup_id: @lookup_id, lookup: @lookup } %>
+<% end %>
