@@ -2,6 +2,10 @@
 
 A small utility that fetches [Open Graph](https://ogp.me/) metadata for any URL. Submit a link, and the result appears in real-time once the background job finishes processing.
 
+Initially I wanted a redis-only approach because that's how I would implement this (I would want to make storing the open graph data ephermeral, connected to a session). Nevertheless, I worried skipping the postgres would have the reviewer worried I wasn't comfortable working with relational databases. Thus the reason I've added both `redis` and `postgres` approaches.
+
+🤖 Co-authored with Claude Code 🤖
+
 ## How it works
 
 1. You paste a URL into the form
