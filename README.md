@@ -34,7 +34,7 @@ docker compose up --build
 
 ### Postgres
 
-If you need persistent, queryable storage, set `LOOKUP_STORE=postgres` and use the Postgres compose file. Lookups are stored in a `lookups` table. Redis is still required for Sidekiq and ActionCable.
+If you need persistent, queryable storage, set `LOOKUP_STORE=postgres` (already set in docker-compose.postgres.yml) and use the Postgres compose file. Lookups are stored in a `lookups` table. Redis is still required for Sidekiq and ActionCable.
 
 ```
 docker compose -f docker-compose.postgres.yml up --build
